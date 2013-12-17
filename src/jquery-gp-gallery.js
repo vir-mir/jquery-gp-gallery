@@ -4,6 +4,7 @@
         is_first_big: true,
         row_min_height: 180,
         row_max_height: 250,
+        increase: true,
         row_max_width: null,
         gutter: 5
     };
@@ -41,12 +42,14 @@
 
             if ($pic[0].nodeName.toUpperCase() != 'IMG') {
                 $pic = $pic.find('img');
+            } else if ($this.parent()[0].nodeName.toUpperCase() == 'A') {
+                $this = $this.parent();
             } else {
-                $this = $('<div>').insertBefore($pic).append($pic);
+                $this = $('<span>').insertBefore($pic).append($pic);
             }
             if (!$pic.length) return;
 
-            $this.css({width: 'auto', float: 'left', position: 'relative'});
+            $this.css({width: 'auto', display: 'block', float: 'left', position: 'relative'});
 
             var item = {
                 pic: $pic,
@@ -105,48 +108,48 @@
                         clear: 'left'
                     });
                 }
-                pic.is_hover = null;
-                pic.hover(function() {
-                    pic.stop().addClass('gp-gallery-picture-hover');
-                    container.addClass('gp-gallery-hover');
+				pic.is_hover = null;
+				pic.hover(function() {
+					pic.stop().addClass('gp-gallery-picture-hover');
+					container.addClass('gp-gallery-hover');
 
-                    if (item.original_height > item.height && item.original_width > item.width) {
-                        pic.is_hover = setTimeout(function() {
-                            pic.removeClass('gp-gallery-picture-hover');
-                            pic.addClass('gp-gallery-picture-zoom');
+					if ((item.original_height > item.height && item.original_width > item.width) && $settings.increase) {
+						pic.is_hover = setTimeout(function() {
+							pic.removeClass('gp-gallery-picture-hover');
+							pic.addClass('gp-gallery-picture-zoom');
 
-                            if (pic.is_hover) {
-                                pic.animate({
-                                    marginTop: '-' + (item.original_height - item.height)/2 + 'px',
-                                    marginLeft: '-' + (item.original_width - item.width)/2 + 'px',
-                                    width: item.original_width + 'px',
-                                    height: item.original_height + 'px'
-                                }, 100);
-                            }
-                        }, 200);
-                    }
-                }, function() {
-                    if (pic.is_hover) {
-                        clearTimeout(pic.is_hover);
-                        pic.is_hover = null;
-                    }
-                    if (item.original_height > item.height && item.original_width > item.width && pic.hasClass('gp-gallery-picture-zoom')) {
-                        pic.stop().animate({
-                            marginTop: '-6px',
-                            marginLeft: '-6px',
-                            width: item.width + 'px',
-                            height: item.height + 'px'
-                        }, 50, function() {
-                            container.removeClass('gp-gallery-hover');
-                            pic.removeClass('gp-gallery-picture-hover').removeClass('gp-gallery-picture-zoom').css({
-                                margin: ''
-                            });
-                        });
-                    } else {
-                        container.removeClass('gp-gallery-hover');
-                        pic.removeClass('gp-gallery-picture-hover').removeClass('gp-gallery-picture-zoom');
-                    }
-                });
+							if (pic.is_hover) {
+								pic.animate({
+									marginTop: '-' + (item.original_height - item.height)/2 + 'px',
+									marginLeft: '-' + (item.original_width - item.width)/2 + 'px',
+									width: item.original_width + 'px',
+									height: item.original_height + 'px'
+								}, 100);
+							}
+						}, 200);
+					}
+				}, function() {
+					if (pic.is_hover) {
+						clearTimeout(pic.is_hover);
+						pic.is_hover = null;
+					}
+					if ((item.original_height > item.height && item.original_width > item.width && pic.hasClass('gp-gallery-picture-zoom')) && $settings.increase) {
+						pic.stop().animate({
+							marginTop: '-6px',
+							marginLeft: '-6px',
+							width: item.width + 'px',
+							height: item.height + 'px'
+						}, 50, function() {
+							container.removeClass('gp-gallery-hover');
+							pic.removeClass('gp-gallery-picture-hover').removeClass('gp-gallery-picture-zoom').css({
+								margin: ''
+							});
+						});
+					} else {
+						container.removeClass('gp-gallery-hover');
+						pic.removeClass('gp-gallery-picture-hover').removeClass('gp-gallery-picture-zoom');
+					}
+				});
             });
             if (!bucket.last && $last_item) {
                 $last_item.width = $last_item.width + max_bucket_width - getWidthForBucket(bucket.items);

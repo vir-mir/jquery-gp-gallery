@@ -25,7 +25,7 @@ Example::
     </div>
     
     <script>
-        $('.pictures').gpGallery('img');
+        $('.pictures').gpGallery('img', {increase: false});
     </script>    
 
 *Note:*
